@@ -6,7 +6,6 @@ import TableLayout from './components/patient-drug-table';
 
 class App extends Component {
   render() {
-
     return (
       <div className="App">
         <Header />

@@ -1,0 +1,64 @@
+version: "3"
+services:
+  mongo:
+    build: ./db
+    ports:
+      - "27018:27017"
+    networks:
+      - backend
+    volumes:
+      - db-data:/data/db/
+  server:
+    build: ./server
+    command: npm start
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - mongo
+    volumes:
+      - ./server:/app
+    ports:
+      - "8000:8000"
+    links:
+      - mongo
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=API]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+  client:
+    build: ./client
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - server
+    volumes:
+      - ./client/:/app
+    ports:
+      - "3000:3000"
+    deploy:
+      mode: replicated
+      replicas: 2
+      labels: [APP=CLIENT]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:
