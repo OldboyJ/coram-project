@@ -8,8 +8,23 @@ import {
  } from 'reactstrap';
 
 class TableLayout extends Component {
-  render() {
 
+  constructor () {
+    super();
+    this.state = { patient_data : []};
+}
+componentWillMount() {
+
+  PatientList() {
+    return $.getJSON('https://localuser:3000/patients')
+    .then((res) => {
+      this.setState({ patient_data: res.json() });
+    });
+  }
+}
+
+  render() {
+    let patData = this.state.patient_data;
     return (
       <div className="Patient-drug-table">
        <Container>
@@ -25,21 +40,13 @@ class TableLayout extends Component {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>PIF-010001</td>
-                  <td>Horace, Towne</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>PIF-010002</td>
-                  <td>Noble, Jacobs</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>PIF-010003</td>
-                  <td>Hardens, Sean</td>
-                  <td>@twitter</td>
-                </tr>
+                {patData.map(detail =>
+                  <tr>
+                    <td>{detail.patient_id}</td>
+                    <td>{detail.patient}</td>
+                    <td>{detail.approved}</td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </Col>

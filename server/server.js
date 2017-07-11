@@ -6,7 +6,7 @@ var cors = require('cors');
 var logger = require('morgan');
 var knex = require('./db/knex');
 
-var index = require('./routes/indexRoutes');
+var index = require('./routes/patientRoutes');
 var todos = require('./routes/todosRoutes');
 
 var app = express();
